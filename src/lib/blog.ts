@@ -1,7 +1,5 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
 import type { BlogSearchItem } from "@/lib/blog-shared";
+import blogPostsData from "@/data/blog-posts.json";
 
 export type { BlogSearchItem } from "@/lib/blog-shared";
 export { searchBlogIndex } from "@/lib/blog-shared";
@@ -25,61 +23,28 @@ export type BlogPost = BlogFrontmatter & {
 
 export const POSTS_PER_PAGE = 12;
 
-const BLOG_DIR = path.join(process.cwd(), "src/content/blog");
-
-function estimateReadingTime(content: string): string {
-  const words = content.trim().split(/\s+/).length;
-  const minutes = Math.max(1, Math.round(words / 200));
-  return `${minutes} min read`;
-}
+/** All posts bundled at build time (works on Cloudflare Workers). */
+const ALL_POSTS = blogPostsData as BlogPost[];
 
 export function getAllPosts(): BlogPost[] {
-  if (!fs.existsSync(BLOG_DIR)) return [];
-
-  const files = fs
-    .readdirSync(BLOG_DIR)
-    .filter((file) => file.endsWith(".mdx"));
-
-  const posts = files.map((file) => {
-    const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf8");
-    const { data, content } = matter(raw);
-    const fm = data as BlogFrontmatter;
-
-    return {
-      title: fm.title,
-      description: fm.description,
-      date: fm.date,
-      category: fm.category,
-      slug: fm.slug || file.replace(/\.mdx$/, ""),
-      coverImage: fm.coverImage,
-      coverAlt: fm.coverAlt,
-      subImage: fm.subImage,
-      subImageAlt: fm.subImageAlt,
-      content,
-      readingTime: estimateReadingTime(content),
-    };
-  });
-
-  return posts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  return ALL_POSTS;
 }
 
 export function getPost(slug: string): BlogPost | undefined {
-  return getAllPosts().find((post) => post.slug === slug);
+  return ALL_POSTS.find((post) => post.slug === slug);
 }
 
 export function getAllPostSlugs(): string[] {
-  return getAllPosts().map((post) => post.slug);
+  return ALL_POSTS.map((post) => post.slug);
 }
 
 export function getBlogCategories(): string[] {
-  const set = new Set(getAllPosts().map((p) => p.category));
+  const set = new Set(ALL_POSTS.map((p) => p.category));
   return Array.from(set).sort((a, b) => a.localeCompare(b));
 }
 
 export function getTotalBlogPages(perPage = POSTS_PER_PAGE): number {
-  return Math.max(1, Math.ceil(getAllPosts().length / perPage));
+  return Math.max(1, Math.ceil(ALL_POSTS.length / perPage));
 }
 
 export function getPaginatedPosts(
@@ -91,7 +56,7 @@ export function getPaginatedPosts(
   totalPages: number;
   totalPosts: number;
 } {
-  const all = getAllPosts();
+  const all = ALL_POSTS;
   const totalPages = Math.max(1, Math.ceil(all.length / perPage));
   const safePage = Math.min(Math.max(1, page), totalPages);
   const start = (safePage - 1) * perPage;
@@ -105,7 +70,7 @@ export function getPaginatedPosts(
 }
 
 export function getRelatedPosts(slug: string, limit = 3): BlogPost[] {
-  const all = getAllPosts();
+  const all = ALL_POSTS;
   const current = all.find((p) => p.slug === slug);
   if (!current) return all.filter((p) => p.slug !== slug).slice(0, limit);
 
@@ -120,7 +85,7 @@ export function getRelatedPosts(slug: string, limit = 3): BlogPost[] {
 
 /** Lightweight index for client-side search (no MDX body). */
 export function getBlogSearchIndex(): BlogSearchItem[] {
-  return getAllPosts().map(
+  return ALL_POSTS.map(
     ({ title, description, date, category, slug, readingTime }) => ({
       title,
       description,
@@ -133,9 +98,7 @@ export function getBlogSearchIndex(): BlogSearchItem[] {
 }
 
 export function getRecentPosts(excludeSlug?: string, limit = 4): BlogPost[] {
-  return getAllPosts()
-    .filter((p) => p.slug !== excludeSlug)
-    .slice(0, limit);
+  return ALL_POSTS.filter((p) => p.slug !== excludeSlug).slice(0, limit);
 }
 
 /** Editorial “trending” mix: AI/SEO priority, then recency. */
@@ -153,7 +116,7 @@ const TRENDING_PRIORITY = [
 ];
 
 export function getTrendingPosts(excludeSlug?: string, limit = 4): BlogPost[] {
-  const all = getAllPosts();
+  const all = ALL_POSTS;
   const bySlug = new Map(all.map((p) => [p.slug, p]));
   const picked: BlogPost[] = [];
 
