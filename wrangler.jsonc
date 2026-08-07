@@ -11,6 +11,11 @@
   "observability": {
     "enabled": true
   },
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "vedasynk.com", "custom_domain": true },
+    { "pattern": "www.vedasynk.com", "custom_domain": true }
+  ],
   "vars": {
     "LEAD_ORIGIN": "https://vedasynk.com",
     "NEXT_PUBLIC_SITE_URL": "https://vedasynk.com"
