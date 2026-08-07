@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MDXRemote } from "next-mdx-remote/rsc";
+import ReactMarkdown from "react-markdown";
 import { FinalCta } from "@/components/sections/final-cta";
 import {
   BlogAsideRail,
@@ -16,7 +16,7 @@ import {
   getRelatedPosts,
   getTrendingPosts,
 } from "@/lib/blog";
-import { blogMdxComponents } from "@/components/blog/mdx-components";
+import { blogMarkdownComponents } from "@/components/blog/mdx-components";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 import Image from "next/image";
@@ -24,6 +24,10 @@ import Image from "next/image";
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+/** Fully static — content is bundled; no runtime filesystem. */
+export const dynamic = "force-static";
+export const revalidate = false;
 
 export function generateStaticParams() {
   return getAllPostSlugs().map((slug) => ({ slug }));
@@ -75,7 +79,9 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="min-w-0 max-w-3xl">
             <BlogArticleMotion>
               <div className="prose-blog space-y-5 text-base leading-relaxed text-ink-secondary [&_a]:text-accent [&_a]:underline-offset-2 hover:[&_a]:underline [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-ink [&_h3]:mt-8 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-ink [&_li]:ml-5 [&_li]:list-disc [&_strong]:font-semibold [&_strong]:text-ink [&_ul]:space-y-2">
-                <MDXRemote source={post.content} components={blogMdxComponents} />
+                <ReactMarkdown components={blogMarkdownComponents}>
+                  {post.content}
+                </ReactMarkdown>
               </div>
             </BlogArticleMotion>
 

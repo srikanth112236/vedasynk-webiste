@@ -23,6 +23,9 @@ type Props = {
   params: Promise<{ page: string }>;
 };
 
+export const dynamic = "force-static";
+export const revalidate = false;
+
 export function generateStaticParams() {
   const total = getTotalBlogPages();
   return Array.from({ length: Math.max(0, total - 1) }, (_, i) => ({

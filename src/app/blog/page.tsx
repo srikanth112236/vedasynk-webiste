@@ -25,6 +25,9 @@ export const metadata = buildMetadata({
   path: "/blog",
 });
 
+export const dynamic = "force-static";
+export const revalidate = false;
+
 export default function BlogPage() {
   const { posts, page, totalPages, totalPosts } = getPaginatedPosts(1);
   const categories = getBlogCategories();

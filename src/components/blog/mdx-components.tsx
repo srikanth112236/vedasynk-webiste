@@ -1,29 +1,25 @@
 import Image from "next/image";
+import type { Components } from "react-markdown";
 
-type ImgProps = {
-  src?: string | Blob;
-  alt?: string;
-};
-
-export const blogMdxComponents = {
-  img: (props: ImgProps) => {
-    const src = typeof props.src === "string" ? props.src : "";
-    const alt = typeof props.alt === "string" ? props.alt : "";
-    if (!src) return null;
+export const blogMarkdownComponents: Components = {
+  img: ({ src, alt }) => {
+    const url = typeof src === "string" ? src : "";
+    const label = typeof alt === "string" ? alt : "";
+    if (!url) return null;
 
     return (
       <figure className="not-prose my-10 overflow-hidden rounded-2xl border border-border bg-bg-soft">
         <Image
-          src={src}
-          alt={alt}
+          src={url}
+          alt={label}
           width={1400}
           height={788}
           className="h-auto w-full object-cover"
           sizes="(max-width: 768px) 100vw, 720px"
         />
-        {alt ? (
+        {label ? (
           <figcaption className="border-t border-border px-4 py-3 text-xs text-ink-muted">
-            {alt}
+            {label}
           </figcaption>
         ) : null}
       </figure>
