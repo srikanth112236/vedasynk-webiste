@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#g)"/>
+  <text x="80" y="280" font-family="Georgia, serif" font-size="72" fill="#0A0A0B">Vedasynk</text>
+  <text x="80" y="360" font-family="system-ui, sans-serif" font-size="28" fill="#3C4048">Software, brands, and growth systems that ship.</text>
+  <text x="80" y="520" font-family="system-ui, sans-serif" font-size="20" fill="#6B7280">vedasynk.com � Bangalore</text>
+  <defs>
+    <radialGradient id="g" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(900 120) rotate(90) scale(400 600)">
+      <stop stop-color="#0B57D0" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#0B57D0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
