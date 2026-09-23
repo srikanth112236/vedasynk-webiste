@@ -8,7 +8,7 @@ export const blogMarkdownComponents: Components = {
     if (!url) return null;
 
     return (
-      <figure className="not-prose my-10 overflow-hidden rounded-2xl border border-border bg-bg-soft">
+      <figure className="not-prose mx-auto my-10 max-w-2xl overflow-hidden rounded-2xl border border-border bg-bg-soft">
         <Image
           src={url}
           alt={label}
