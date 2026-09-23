@@ -42,7 +42,7 @@ export function Header() {
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled || open
           ? "border-b border-border bg-bg/90 backdrop-blur-md"
-          : "bg-transparent",
+          : "bg-transparent",  
       )}
     >
       <div className="container-page flex h-16 items-center justify-between md:h-[4.25rem]">
